@@ -1,0 +1,148 @@
+<html>
+<head>
+  <title>DirectedGraph</title>
+
+  <style>
+    #graph {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  </style>
+  <script src="cytoscape.min.js"></script>
+  <script src="cola.v3.min.js"></script>
+</head>
+<body>
+  <div id="graph">
+  </div>
+  <script>
+  var cy = cytoscape({
+
+    container: document.getElementById('graph'), // container to render in
+
+    elements: [ // list of graph elements to start with
+      { // node a
+        data: { id: 'archer' }
+      },
+      { // node b
+        data: { id: 'dishy' }
+      },
+      {
+        // node c
+        data: {id: 'kant'}
+      },
+      {
+        // node d
+        data: {id: 'Yanlecun'}
+      },
+      {
+        //node
+        data: {id: '萌萌'}
+      },
+      {
+        // node
+        data: {id: '伟豪'}
+      },
+      {
+        // node
+        data: {id: '威龙'}
+      },
+      {
+        // node
+        data: {id: '坤琳'}
+      },
+      {
+        // node
+        data: {id: '阿呆'}
+      },
+      {
+        // node
+        data: {id: '送江'}
+      },
+      {
+        // node
+        data: {id: '李逵'}
+      },
+      {
+        // edge
+        data: {id: 'archer-dishy', source: 'archer', target: 'dishy'}
+      },
+      {
+        // edge
+        data: {id: 'dishy-kant', source: 'dishy', target: 'kant'}
+      },
+      {
+        // edge
+        data: {id: 'dishy-Yanlecun', source: 'dishy', target: 'Yanlecun'}
+      },
+      {
+        // edge
+        data: {id: 'Yanlecun-mengmeng', source: 'Yanlecun', target: '萌萌'}
+      },
+      {
+        // edge
+        data: {id: 'Yanlecun-mengmeng', source: 'Yanlecun', target: '送江'}
+      },
+      {
+        // edge
+        data: {id: 'Yanlecun-mengmeng', source: 'Yanlecun', target: '阿呆'}
+      },
+      {
+        //edge
+        data: {id: '送江-李逵', source: '送江', target: '李逵'}
+      },
+      {
+        //edge
+        data: {id: '萌萌-伟豪', source: '萌萌', target: '伟豪'}
+      },
+      {
+        //edge
+        data: {id: '伟豪-阿呆', source: '伟豪', target: '阿呆'}
+      },
+      {
+        // edge
+        data: {id: 'kant-坤琳', source: 'kant', target: '坤琳'}
+      },
+      {
+        // edge
+        data: {id: 'kant-威龙', source: 'kant', target: '威龙'}
+      }
+    ],
+
+    style: [ // the stylesheet for the graph
+      {
+        selector: 'node',
+        style: {
+          'background-color': '#666',
+          'label': 'data(id)'
+        }
+      },
+
+      {
+        selector: 'edge',
+        style: {
+          'width': 3,
+          'line-color': '#ccc',
+          'target-arrow-color': '#ccc',
+          'target-arrow-shape': 'triangle'
+        }
+      }
+    ],
+
+    layout: {
+      name: 'random',
+
+      fit: true, // whether to fit to viewport
+      padding: 30, // fit padding
+      boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+      animate: false, // whether to transition the node positions
+      animationDuration: 500, // duration of animation in ms if enabled
+      animationEasing: undefined, // easing of animation if enabled
+      ready: undefined, // callback on layoutready
+      stop: undefined // callback on layoutstop
+    }
+
+  });
+  </script>
+</body>
+</html>

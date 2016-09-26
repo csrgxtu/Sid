@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title></title>
+
+  <!-- stylesheets -->
+  <link rel="stylesheet" href="./treant-js-master/Treant.css" type="text/css"/>
+
+  <!-- javascript -->
+  <script src="./treant-js-master/vendor/raphael.js"></script>
+  <script src="./treant-js-master/Treant.js"></script>
+</head>
+<body>
+  <div id="tree-simple" style="width:335px; height: 160px"> </div>
+
+  <script>
+  simple_chart_config = {
+    chart: {
+        container: "#tree-simple"
+    },
+
+    nodeStructure: {
+        text: { name: "poly" },
+        children: [
+            {
+                text: { name: "stark" },
+                // children: [
+                //   {
+                //     text: {name: "rob"}
+                //   },
+                //   {
+                //     text: {name: "john"}
+                //   },
+                //   {
+                //     text: {name: "sansa"}
+                //   },
+                // ]
+            },
+            {
+                text: { name: "arya" }
+            }
+        ]
+    }
+};
+
+  var my_chart = new Treant(simple_chart_config);
+  </script>
+
+</body>
+</html>
