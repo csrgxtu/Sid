@@ -13,6 +13,7 @@ func init() {
 }
 
 func SessionInit() (err error) {
+	// beego.Info(beego.AppConfig.String("MongoDBUrl"))
 	Session, err = mgo.Dial(beego.AppConfig.String("MongoDBUrl"))
 	if err != nil {
 		// panic(err)
