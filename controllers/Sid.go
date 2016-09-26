@@ -32,7 +32,7 @@ func (this *SidController) Propagate() {
 		this.Data["json"] = &rt
 		this.ServeJSON()
 	}
-	beego.Info(virus)
+	// beego.Info(virus)
 
 	// get the raw infected data
 	err, infects := services.GetInfects(vid)
@@ -49,10 +49,20 @@ func (this *SidController) Propagate() {
 		UserIds = append(UserIds, infects[i].CarryId)
 		UserIds = append(UserIds, infects[i].InfectedId)
 	}
-	beego.Info(UserIds)
+	err, users := services.GetUsers(UserIds)
+	if err != nil {
+		rt.Msg = "o_o"
+		this.Ctx.ResponseWriter.WriteHeader(404)
+		this.Data["json"] = &rt
+		this.ServeJSON()
+	}
 
-	// assemble the data
-
+	rt.Msg = "^_^"
+	var data models.VirusInfectedUsers
+	data.Virus = virus
+	data.Infected = infects
+	data.Users = users
+	rt.Data = data
 
 	this.Data["json"] = &rt
 	this.ServeJSON()

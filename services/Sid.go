@@ -43,6 +43,22 @@ func GetInfects(vid string) (err error, rtv []models.Infected) {
   return
 }
 
+func GetUsers(userIds []string) (err error, rtv []models.User) {
+  if CheckAndReconnect() != nil {
+    return
+  }
+
+  var criteria = bson.M{"openid": bson.M{"$in": userIds}}
+  err = Session.DB(DB).C(UserCollection).Find(criteria).All(&rtv)
+  if err != nil {
+    beego.Info(err)
+    err = errors.New("Server Internal Error")
+    return
+  }
+  
+  return
+}
+
 // var ScanImageCollection = beego.AppConfig.String("ScanImageCollection")
 // var SpineImageCollection = beego.AppConfig.String("SpineImageCollection")
 
