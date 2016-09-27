@@ -1,0 +1,216 @@
+
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hello D3</title>
+  <script src="http://gafish.github.io/demo/d3/d3.js"></script>
+  <style>
+
+    .node circle {
+      fill: #fff;
+      stroke: steelblue;
+      stroke-width: 1.5px;
+    }
+
+    .node {
+      font: 12px sans-serif;
+    }
+
+    .link {
+      fill: none;
+      stroke: #ccc;
+      stroke-width: 1.5px;
+    }
+  </style>
+</head>
+<body>
+
+
+<script>
+  function BuildData(bdata) {
+    // get the username
+    for (var i = 0; i < Data.data.user.length; i++) {
+      if (Data.data.user[i].openid == bdata.uid) {
+        bdata.name = Data.data.user[i].nickname;
+        bdata.uid = Data.data.user[i].openid;
+      }
+    }
+
+    // get children
+    var children = [];
+    for (var i = 0; i < Data.data.infected.length; i++) {
+      if (Data.data.infected[i].carryid == bdata.uid) {
+        var child = new Object();
+        child.uid = Data.data.infected[i].infectid;
+        for (var j = 0; j < Data.data.user.length; j++) {
+          if (Data.data.user[j].openid == child.uid) {
+            child.name = Data.data.user[j].nickname;
+            break;
+          }
+        }
+        children.push(child);
+      }
+    }
+    if (children.length == 0) {
+      return bdata;
+    }
+    for (var i = 0; i < children.length; i++) {
+
+    }
+
+    bdata.children = children;
+
+    return bdata;
+  }
+
+  function Looper(bdata) {
+    for (var i = 0; i < bdata.children.length; i++) {
+      bdata.children[i] = BuildData(bdata.children[i]);
+    }
+    return bdata;
+  }
+
+  var Data = null;
+  var url = "/sid/propagation/" + window.location.toString().split('=')[1];
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", url, false);
+  xhr.send()
+  if (xhr.status === 200) {
+    Data = JSON.parse(xhr.responseText);
+  }
+
+  var createUserId = Data.data.virus.userid;
+  var res = new Object();
+  res.uid = createUserId;
+  res = BuildData(res);
+  // loop1:
+  //   for ( ; true; ) {
+  //     var bdata = res.children;
+  //     var count = 0;
+  //     loop2:
+  //       for (var i = 0; i < bdata.length; i++) {
+  //         var tmp = BuildData(bdata.[i]);
+  //         if (tmp.children.length == 0) {
+  //           count = count + 1;
+  //         }
+  //         if (count == bdata.children.length) {
+  //           // 这一层全是空的
+  //           break loop1;
+  //         }
+  //         bdata[i] = tmp;
+  //       }
+  //     res.children = bdata;
+  //   }
+
+  res = Looper(res);
+  for (var i = 0; i < res.children.length; i++) {
+    if (res.children[i].children === undefined || res.children[i].children == null) {
+      continue;
+    } else {
+      // console.log(res.children[i].children.length);
+      for (var j = 0; j < res.children[i].children.length; j++) {
+        res.children[i].children[j] = BuildData(res.children[i].children[j]);
+      }
+    }
+  }
+
+  for (var i = 0; i < res.children.length; i++) {
+    if (res.children[i].children === undefined || res.children[i].children == null) {
+      continue;
+    } else {
+      for (var j = 0; j < res.children[i].children.length; j++) {
+        if (res.children[i].children[j].children === undefined || res.children[i].children[j].children == null) {
+          continue;
+        } else {
+          for (var k = 0; k < res.children[i].children[j].children.length; k++) {
+            res.children[i].children[j].children[k] = BuildData(res.children[i].children[j].children[k]);
+          }
+        }
+      }
+    }
+  }
+
+
+  console.log(res);
+
+  var width = 1000,
+      height = 500;
+  var data = res;
+  // var data = {
+  //   "name":"中国",
+  //   "children":
+  //       [
+  //         {
+  //           "name":"广西" ,
+  //           "id": "dfjslfsdjf",
+  //           "children":
+  //               [
+  //                 {
+  //                   "name":"桂林",
+  //                   "children":
+  //                       [
+  //                         {"name":"秀峰区"},
+  //                         {"name":"叠彩区"},
+  //                         {"name":"象山区"},
+  //                         {
+  //                           "name":"七星区",
+  //                           "children": [
+  //                             {"name": "awsome"},
+  //                             {"name": "cpu"},
+  //                             {"name": "Golang"}
+  //                           ]
+  //                         }
+  //                       ]
+  //                 },
+  //                 {"name":"南宁"},
+  //                 {"name":"柳州"},
+  //                 {"name":"防城港"}
+  //               ]
+  //         },
+  //       ]
+  // };
+
+  var cluster = d3.layout.tree()
+      .size([width, height-100]);
+
+  var nodes = cluster.nodes(data);
+  var links = cluster.links(nodes);
+
+  var diagonal = d3.svg.diagonal()
+
+  var svg = d3.select("body").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", "translate(0,50)");
+
+    var link = svg.selectAll(".link")
+        .data(links)
+        .enter()
+        .append("path")
+        .attr("class", "link")
+        .attr("d", diagonal);
+
+    var node = svg.selectAll(".node")
+        .data(nodes)
+        .enter()
+        .append("g")
+        .attr("class", "node")
+        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+
+    node.append("circle")
+        .attr("r", 4.5);
+
+    node.append("text")
+        .attr("dx", function(d) { return d.children ? -8 : 8; })
+        .attr("dy", 3)
+        .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+        .text(function(d) { return d.name; });
+
+
+
+</script>
+
+
+</body>
