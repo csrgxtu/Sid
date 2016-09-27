@@ -16,3 +16,7 @@ runmode = dev
 # Third, start the server
 bee run
 ```
+
+### Result
+一篇文章的传播情况，这里只列出上层的传播情况，因为深度太深，无法在一个页面完整列出来。
+![result.jpg](https://github.com/csrgxtu/Sid/blob/master/static/result.jpg)
